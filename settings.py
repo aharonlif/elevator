@@ -1,5 +1,5 @@
 SCREEN_WIDTH = 1200
-SCREEN_HIGHT = 600
+SCREEN_HEIGHT = 600
 
 FLOOR_WIDTH = 150
 FLOOR_HIGHT= 80
@@ -13,7 +13,6 @@ BUTTON_COLOR_TEMPORARILY = (0, 255, 0)
 
 BUILDINGS = [  
                 {"floors": 7, "elevators" : 3},
-                {"floors": 3, "elevators" : 1},
-                {"floors": 6, "elevators" : 3},
+                {"floors": 3, "elevators" : 4},
                 {"floors": 6, "elevators" : 1}
             ]

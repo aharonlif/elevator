@@ -4,6 +4,9 @@ import settings
 
 
 class Button():
+    """
+    Represents a clickable button with a number displayed on it.
+    """
     radius = settings.FLOOR_WIDTH/4
     size = (radius, radius)
     color = settings.BUTTON_COLOR
@@ -13,8 +16,6 @@ class Button():
 
 
     def __init__(self, number):
-
-        self.color = self.color  # Cream color
         self.number = number
         self.font = pg.font.SysFont(None, self.text_size)
         self.image = self.create_button_image()

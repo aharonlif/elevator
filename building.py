@@ -10,38 +10,37 @@ class Building(pg.sprite.Group):
     Represents a building containing multiple floors and elevators.
     Manages the elevators and their movements.
     """
-
     def __init__(self, build, x_position):
         """
         Initializes the Building object.
-        
+        This constructor sets up the building with the specified configuration and position.
         Args:
-            floors (int): The number of floors in the building.
-            elevators (int): The number of elevators in the building.
-            building_number (int, optional): The building number for positioning. Defaults to 0.
-            x_position (int, optional): The x-coordinate for the building position. Defaults to 0.
+            build (dict): A dictionary containing the configuration for the building.
+                - "floors" (int): The number of floors in the building.
+                - "elevators" (int): The number of elevators in the building.
+            x_position (int): The x-coordinate for the position of the building on the screen.
         """
         super().__init__()
         self.floors = [None] * build["floors"]
         self.elevators = [None] * build["elevators"]
         self.x_position = x_position
-        self.floors_factory()
-        self.elevators_factory()
+        self.create_floors()
+        self.create_elevators()
 
 
-    def floors_factory(self):
+    def create_floors(self):
         """
         Creates the floors for the building and adds them to the sprite group.
         Draws lines between the floors.
         """
-        y_position = settings.SCREEN_HIGHT
-        line_y_position = settings.SCREEN_HIGHT
+        y_position = settings.SCREEN_HEIGHT
+        line_y_position = settings.SCREEN_HEIGHT
         for i in range(len(self.floors)):
             self.floors[i] = flr(i, bottomleft=(self.x_position, y_position))
             self.add(self.floors[i])
             y_position -= flr.height + Line.thickness
 
-            if i == 1:  # If i == 0 don't need to draw black line, only between floors.
+            if i == 1:
                 line_y_position -= flr.height
                 self.add(Line(bottomleft=(self.x_position, line_y_position)))
                 continue
@@ -50,49 +49,31 @@ class Building(pg.sprite.Group):
                 line_y_position -= flr.height + Line.thickness
                 self.add(Line(bottomleft=(self.x_position, line_y_position)))
 
-    def elevators_factory(self):
+
+    def create_elevators(self):
         """
         Creates the elevators for the building and adds them to the sprite group.
-        
-        Args:
-            elevators (int): The number of elevators to create.
         """
         for i in range(len(self.elevators)):
             x_position = self.x_position + flr.width + (i * elv.width)
-            y_position = settings.SCREEN_HIGHT
+            y_position = settings.SCREEN_HEIGHT
             elevator = elv(bottomleft=(x_position, y_position))
             self.add(elevator)
             self.elevators[i] = elevator
 
+
     def _find_nearest_elevator(self, floor):
-        """
-        Finds the nearest available elevator to the given floor.
-        
-        Args:
-            floor (int): The floor number to find the nearest elevator to.
-        
-        Returns:
-            Elevator: The nearest available elevator.
-        """
-       
-        nearest_elevator = min( (
-                elevator for elevator in self.elevators ), 
-            key=lambda elevator: elevator.arrival_time + (not elevator.free) * 2 + abs(elevator.floor - floor)/2 if not (elevator.move_to_floors
-            ) else elevator.move_to_floors[-1]["arrival time"] + 2 + abs(elevator.move_to_floors[-1]["floor"] - floor)/2
-                )
-        
+        nearest_elevator = min(
+            (elevator for elevator in self.elevators),
+            key=lambda elevator: elevator.arrival_time + (not elevator.free) * 2 + abs(elevator.floor - floor) / 2 if not (elevator.move_to_floors)
+            else elevator.move_to_floors[-1]["arrival time"] + 2 + abs(elevator.move_to_floors[-1]["floor"] - floor) / 2
+        )
         return nearest_elevator
 
 
-    def cold_to_elevator(self, floor):
+    def call_to_elevator(self, floor):
         """
-        Moves the nearest available elevator to the specified floor.
-        
-        Args:
-            floor (int): The floor number to move the elevator to.
-        
-        Returns:
-            bool: True if an elevator was moved, otherwise False.
+        Calls the nearest available elevator to the specified floor.
         """
         nearest_elevator = self._find_nearest_elevator(floor)
         nearest_elevator.move_to_floor(floor)
@@ -107,7 +88,7 @@ class Building(pg.sprite.Group):
         for elv in self.elevators:
             elv.update()
             if not elv.moving() and self.floors[elv.floor].button.color == settings.BUTTON_COLOR_TEMPORARILY:
-                self.floors[elv.floor].change_color(settings.BUTTON_COLOR)            
+                self.floors[elv.floor].change_color(settings.BUTTON_COLOR)
 
             if not elv.free:
                 floor = elv.floor
