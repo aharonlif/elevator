@@ -6,7 +6,6 @@ class Line(pg.sprite.Sprite):
     """
     A class representing a line used to visually separate floors in the building.
     """
-
     color = global_vars.LINE_COLOR
     thickness = global_vars.LINE_THICKNESS
     

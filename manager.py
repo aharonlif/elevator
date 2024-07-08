@@ -60,17 +60,9 @@ class Manager:
                     return
 
     def update(self):
-        """
-        Updates the state of all buildings and their elevators.
-        Calls the `update` method on each building to refresh the state and handle any changes.
-        """
         for building_ in self.buildings:
             building_.update()
 
 
     def draw(self):
-        """
-        Draws all sprites to the screen.
-        This method is responsible for rendering the current state of all game elements.
-        """
         self.group.draw(self.screen)
