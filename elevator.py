@@ -41,7 +41,10 @@ class Elevator(pg.sprite.Sprite):
                 arrival_time = self.floors_waiting[-1]["arrival time"] + 2 + abs(self.floors_waiting[-1]["floor"] - floor) / 2            
             self.floors_waiting.append({"floor": floor, "arrival time": arrival_time})
             return
+        self.start_task(floor)
         
+
+    def start_task(self, floor):
         self.free = False
         self.target_floor = floor
         self.movement_last_time = time.time()
@@ -99,7 +102,7 @@ class Elevator(pg.sprite.Sprite):
                 floor = self.floors_waiting[0]["floor"]
                 self.arrival_time = self.floors_waiting[0]["arrival time"]
                 self.floors_waiting.pop(0)
-                self.add_task(floor)
+                self.start_task(floor)
             else:
                 return
         self.update_location()
