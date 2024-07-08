@@ -13,6 +13,9 @@ BUTTON_COLOR_TEMPORARILY = (0, 255, 0)
 
 BUILDINGS = [  
                 {"floors": 7, "elevators" : 3},
-                {"floors": 3, "elevators" : 4},
+                {"floors": 5, "elevators" : 4},
                 {"floors": 6, "elevators" : 1}
             ]
+
+
+ELAPSED_TIME = 0

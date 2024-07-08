@@ -1,13 +1,13 @@
 import pygame as pg
 
 from button import Button
-import settings
+import global_vars
 
 class Floor(pg.sprite.Sprite):
     """
     Represents a floor in a building with a button for elevator calls.
     """
-    width, height = settings.FLOOR_WIDTH, settings.FLOOR_HIGHT
+    width, height = global_vars.FLOOR_WIDTH, global_vars.FLOOR_HIGHT
 
     def __init__(self, floor_number, bottomleft):
         """
@@ -41,7 +41,7 @@ class Floor(pg.sprite.Sprite):
 
 
     def an_elevator_was_called(self, arrival_time):
-        self.change_color(settings.BUTTON_COLOR_TEMPORARILY)
+        self.change_color(global_vars.BUTTON_COLOR_TEMPORARILY)
         self.update_time_elevator(arrival_time)
 
 
@@ -49,7 +49,7 @@ class Floor(pg.sprite.Sprite):
         """
         Updates the display with the time remaining until the elevator arrives at this floor.
         """
-        size = settings.FLOOR_WIDTH / 6
+        size = global_vars.FLOOR_WIDTH / 6
         surface_time = pg.Surface((size, size), pg.SRCALPHA)
         center = size // 2
         pg.draw.rect(surface_time, (250, 200, 250), (0, 0, size, size))

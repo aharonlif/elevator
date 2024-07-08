@@ -1,15 +1,15 @@
 import pygame as pg
 
-import settings
+import global_vars
 
 
 class Button():
     """
     Represents a clickable button with a number displayed on it.
     """
-    radius = settings.FLOOR_WIDTH/4
+    radius = global_vars.FLOOR_WIDTH/4
     size = (radius, radius)
-    color = settings.BUTTON_COLOR
+    color = global_vars.BUTTON_COLOR
     text_color = (0, 0, 0)
     text_size = int(radius*1)
     pg.font.init()
