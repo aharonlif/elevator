@@ -8,7 +8,7 @@ pg.mixer.init()
 class Elevator(pg.sprite.Sprite):
     width, height = global_vars.FLOOR_HIGHT, global_vars.FLOOR_HIGHT
     arrived_sound = pg.mixer.Sound("help_files/ding.mp3")
-    floor_travel_time = 0.5 
+    floor_travel_time = global_vars.FLOOR_TRAVEL_TIME
 
     def __init__(self, bottomleft):
         super().__init__()
@@ -21,6 +21,7 @@ class Elevator(pg.sprite.Sprite):
         self.arrival_time = 0  # The time remaining until the elevator reaches the target floor
         self.free = True # Free to move
         self.y_position = bottomleft[1]  # The Y position of the elevator at the start
+        self.rect.y = bottomleft[1] - self.height
         self.floors_waiting = []  # A list of floors the elevator will move to
 
 
@@ -34,9 +35,9 @@ class Elevator(pg.sprite.Sprite):
         """
         if not self.free:
             if len(self.floors_waiting) == 0:
-                arrival_time = self.arrival_time + 2 + abs(self.target_floor - floor) / 2
+                arrival_time = self.arrival_time + global_vars.WAITING_TIME_FOR_ELEVATOR_ARRIVAL + abs(self.target_floor - floor) * self.floor_travel_time
             else:
-                arrival_time = self.floors_waiting[-1]["arrival time"] + 2 + abs(self.floors_waiting[-1]["floor"] - floor) / 2            
+                arrival_time = self.floors_waiting[-1]["arrival time"] + global_vars.WAITING_TIME_FOR_ELEVATOR_ARRIVAL + abs(self.floors_waiting[-1]["floor"] - floor) * self.floor_travel_time            
             self.floors_waiting.append({"floor": floor, "arrival time": arrival_time})
             return
         self.start_task(floor)
@@ -45,7 +46,7 @@ class Elevator(pg.sprite.Sprite):
     def start_task(self, floor):
         self.free = False
         self.target_floor = floor
-        self.arrival_time = int(abs(self.target_floor - self.current_floor)) / 2
+        self.arrival_time = int(abs(self.target_floor - self.current_floor)) * self.floor_travel_time
 
 
     def update_arrival_time(self):
@@ -54,9 +55,8 @@ class Elevator(pg.sprite.Sprite):
         """
         self.arrival_time -= global_vars.ELAPSED_TIME
 
-        if self.arrival_time <= -2:
+        if self.arrival_time <= -global_vars.WAITING_TIME_FOR_ELEVATOR_ARRIVAL:
             self.free = True
-            self.movement_last_time = 0
             self.made_a_sound = False
 
         for floor in self.floors_waiting:
@@ -72,7 +72,6 @@ class Elevator(pg.sprite.Sprite):
         time_fraction = global_vars.ELAPSED_TIME / self.floor_travel_time
         y_move = time_fraction * global_vars.FLOOR_HIGHT
         self.y_position += y_move if self.current_floor > self.target_floor else -y_move
-        return self.y_position
 
 
     def update(self):
@@ -111,8 +110,8 @@ class Elevator(pg.sprite.Sprite):
                 self.current_floor = self.target_floor
                 return True
 
-        y_position = self.calculate_position_to_move()
-        self.rect.bottomleft = (self.rect.x, y_position)
+        self.calculate_position_to_move()
+        self.rect.y =  self.y_position - self.height
 
 
     def arrived(self):
@@ -125,9 +124,33 @@ class Elevator(pg.sprite.Sprite):
 
 
     def calculate_movement_time(self, floor):
+        """
+        Calculate the movement time for the elevator to reach a specified floor.
+
+        Parameters:
+        floor (int): The target floor to calculate the movement time for.
+
+        Returns:
+        float: The estimated time for the elevator to reach the specified floor.
+
+        Logic:
+        - If there are floors waiting:
+            - Calculate the arrival time based on the last floor waiting, adding the global waiting time and the time to move to the target floor.
+        - If the elevator is not free:
+            - Calculate the arrival time based on the current target floor, adding the global waiting time and the time to move to the target floor.
+        - If the elevator is free:
+            - Calculate the time based on the current floor to the target floor.
+
+        Note: It is requested to add 2 seconds to the elevator that does not release even when time has passed since its arrival if it is not released,
+                 since "self_time.arrival" is updated after the arrival of the elevator to minus.
+
+        Movement time is calculated as half (that is "global_vars.FLOOR_TRAVEL_TIME" variable) the absolute difference between the current/target floor and the specified floor.
+        """
         if len(self.floors_waiting) > 0:
-            return self.floors_waiting[-1]["arrival time"] + 2 + abs(self.floors_waiting[-1]["floor"] - floor) / 2
+            return self.floors_waiting[-1]["arrival time"] + global_vars.WAITING_TIME_FOR_ELEVATOR_ARRIVAL + abs(self.floors_waiting[-1]["floor"] - floor) * global_vars.FLOOR_TRAVEL_TIME
+        
         elif not self.free:
-            return self.arrival_time + 2 + abs(self.target_floor - floor) / 2
+            return self.arrival_time + global_vars.WAITING_TIME_FOR_ELEVATOR_ARRIVAL + abs(self.target_floor - floor) * global_vars.FLOOR_TRAVEL_TIME
+        
         else:
-            return abs(self.current_floor - floor) / 2
+            return abs(self.current_floor - floor) * global_vars.FLOOR_TRAVEL_TIME

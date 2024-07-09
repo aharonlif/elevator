@@ -11,11 +11,16 @@ BUTTON_COLOR = (255, 253, 208)
 BUTTON_COLOR_TEMPORARILY = (0, 255, 0)
 
 
+WAITING_TIME_FOR_ELEVATOR_ARRIVAL = 2
+FLOOR_TRAVEL_TIME = 0.5
+
+
+ELAPSED_TIME = 0
+
+
 BUILDINGS = [  
                 {"floors": 7, "elevators" : 3},
                 {"floors": 5, "elevators" : 4},
                 {"floors": 6, "elevators" : 1}
             ]
 
-
-ELAPSED_TIME = 0

@@ -66,10 +66,9 @@ class Building(pg.sprite.Group):
 
     def _find_nearest_elevator(self, floor):
         nearest_elevator = min(
-            (elevator for elevator in self.elevators),
+            (elevator for elevator in self
+             .elevators),
             key=lambda elevator: elevator.calculate_movement_time(floor)
-            # arrival_time + (not elevator.free) * 2 + abs(elevator.target_floor - floor) / 2 if not (elevator.floors_waiting)
-            # else elevator.floors_waiting[-1]["arrival time"] + 2 + abs(elevator.floors_waiting[-1]["floor"] - floor) / 2
         )
         return nearest_elevator
 
