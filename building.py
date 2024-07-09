@@ -79,7 +79,7 @@ class Building(pg.sprite.Group, IBuilding):
         """
         nearest_elevator = self._find_nearest_elevator(floor)
         nearest_elevator.add_task(floor)
-        self.floors[floor].an_elevator_was_called(nearest_elevator.arrival_time)
+        self.floors[floor].an_elevator_was_called(nearest_elevator.arrival_time())
 
 
     def update(self):
@@ -94,7 +94,7 @@ class Building(pg.sprite.Group, IBuilding):
 
             if not elv.free():
                 floor = elv.target_floor
-                self.floors[floor].update_time_elevator(elv.arrival_time)
+                self.floors[floor].update_time_elevator(elv.arrival_time())
 
             if elv.floors_waiting:
                 for floor in elv.floors_waiting:

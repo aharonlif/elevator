@@ -47,7 +47,7 @@ class Elevator(pg.sprite.Sprite):
         self.y_position = bottomleft[1] 
         self.target_floor = 0 
         self.current_floor = 0 
-        self.arrival_time = 0 
+        self._arrival_time = 0 
         self._free = True
         self.floors_waiting = [] 
 
@@ -58,7 +58,7 @@ class Elevator(pg.sprite.Sprite):
         """
         if not self._free:
             if len(self.floors_waiting) == 0:
-                arrival_time = self.arrival_time + global_vars.WAITING_TIME_FOR_ELEVATOR_ARRIVAL + abs(self.target_floor - floor) * self.floor_travel_time
+                arrival_time = self._arrival_time + global_vars.WAITING_TIME_FOR_ELEVATOR_ARRIVAL + abs(self.target_floor - floor) * self.floor_travel_time
             else:
                 arrival_time = self.floors_waiting[-1]["arrival time"] + global_vars.WAITING_TIME_FOR_ELEVATOR_ARRIVAL + abs(self.floors_waiting[-1]["floor"] - floor) * self.floor_travel_time            
             self.floors_waiting.append({"floor": floor, "arrival time": arrival_time})
@@ -72,7 +72,7 @@ class Elevator(pg.sprite.Sprite):
         """
         self._free = False
         self.target_floor = floor
-        self.arrival_time = int(abs(self.target_floor - self.current_floor)) * self.floor_travel_time
+        self._arrival_time = int(abs(self.target_floor - self.current_floor)) * self.floor_travel_time
 
 
     def update(self):
@@ -92,13 +92,13 @@ class Elevator(pg.sprite.Sprite):
                 return          
             else:
                 floor = self.floors_waiting[0]["floor"]
-                self.arrival_time = self.floors_waiting[0]["arrival time"]
+                self._arrival_time = self.floors_waiting[0]["arrival time"]
                 self.floors_waiting.pop(0)
                 self.start_task(floor)
 
         if not self.moving():
             self.update_arrival_time()
-            if self.arrival_time <= -global_vars.WAITING_TIME_FOR_ELEVATOR_ARRIVAL:
+            if self._arrival_time <= -global_vars.WAITING_TIME_FOR_ELEVATOR_ARRIVAL:
                 self._free = True
             return
         
@@ -125,7 +125,7 @@ class Elevator(pg.sprite.Sprite):
         """
         Updates the remaining time until the elevator arrives at the target floor.
         """
-        self.arrival_time -= global_vars.ELAPSED_TIME
+        self._arrival_time -= global_vars.ELAPSED_TIME
 
         for floor in self.floors_waiting:
             floor["arrival time"] -= global_vars.ELAPSED_TIME
@@ -136,7 +136,7 @@ class Elevator(pg.sprite.Sprite):
         Handles the actions to perform when the elevator arrives at the target floor.
         """
         self.arrived_sound.play()
-        self.arrival_time = 0
+        self._arrival_time = 0
         self.current_floor = self.target_floor
 
 
@@ -184,7 +184,11 @@ class Elevator(pg.sprite.Sprite):
             return self.floors_waiting[-1]["arrival time"] + global_vars.WAITING_TIME_FOR_ELEVATOR_ARRIVAL + abs(self.floors_waiting[-1]["floor"] - floor) * global_vars.FLOOR_ELEVATOR_TRAVEL_TIME
         
         elif not self._free:
-            return self.arrival_time + global_vars.WAITING_TIME_FOR_ELEVATOR_ARRIVAL + abs(self.target_floor - floor) * global_vars.FLOOR_ELEVATOR_TRAVEL_TIME
+            return self._arrival_time + global_vars.WAITING_TIME_FOR_ELEVATOR_ARRIVAL + abs(self.target_floor - floor) * global_vars.FLOOR_ELEVATOR_TRAVEL_TIME
         
         else:
             return abs(self.current_floor - floor) * global_vars.FLOOR_ELEVATOR_TRAVEL_TIME
+
+
+    def arrival_time(self):
+        return self._arrival_time
