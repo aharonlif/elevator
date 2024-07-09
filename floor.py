@@ -52,7 +52,7 @@ class Floor(pg.sprite.Sprite):
         size = global_vars.FLOOR_WIDTH / 6
         surface_time = pg.Surface((size, size), pg.SRCALPHA)
         center = size // 2
-        pg.draw.rect(surface_time, (250, 200, 250), (0, 0, size, size)) #
+        pg.draw.rect(surface_time, (250, 200, 250), (0, 0, size, size))
         text_surface = self.font.render(f"{arrival_time:.1f}", True, (20, 10, 100))
         text_rect = text_surface.get_rect(center=(center, center))
         if arrival_time > 0:
