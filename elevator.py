@@ -9,17 +9,32 @@ class Elevator(pg.sprite.Sprite):
     """
     Represents an elevator in a building.
 
+    Attributes:
+    width (int): The width of the elevator, set from global variables.
+    height (int): The height of the elevator, set from global variables.
+    arrived_sound (pg.mixer.Sound): The sound to play when the elevator arrives at a floor.
+    floor_travel_time (float): The time it takes for the elevator to travel between floors, set from global variables.
+    image (pg.Surface): The image representing the elevator.
+    rect (pg.Rect): The rectangle representing the elevator's position and size.
+    y_position (float): The current Y position of the elevator.
+    target_floor (int): The floor the elevator is currently moving towards.
+    current_floor (int): The current floor the elevator is on.
+    arrival_time (float): The time remaining until the elevator reaches the target floor.
+    free (bool): A flag indicating if the elevator is free to take a new task.
+    floors_waiting (list): A list of floors the elevator will move to, with their respective arrival times.
+
     Methods:
-    moving() -> bool: Checks if the elevator is currently moving.
     add_task(floor): Sets the target floor for the elevator and starts the movement towards it, or adds it to the queue.
     start_task(floor): Starts the task of moving the elevator to the specified floor.
-    update_arrival_time(): Updates the remaining time until the elevator arrives at the target floor.
-    update(): Updates the state of the elevator, including its position and whether it has arrived at the target floor.
+    update(): Updates the state of the elevator based on its current conditions.
     update_location(): Updates the location of the elevator and handles the logic for arriving at the target floor.
+    update_arrival_time(): Updates the remaining time until the elevator arrives at the target floor.
     on_arrival(): Plays the arrival sound and sets the elevator's state to indicate it has arrived.
     arrived() -> bool: Checks if the elevator has arrived at the target floor.
-    calculate_movement_time(floor) -> float: Calculates the movement time for the elevator to reach a specified floor.
+    moving() -> bool: Checks if the elevator is currently moving.
+    calculate_movement_time(floor) -> float: Calculates the movement time for the elevator to reach the specified floor.
     """
+    
     width, height = global_vars.FLOOR_HIGHT, global_vars.FLOOR_HIGHT
     arrived_sound = pg.mixer.Sound("help_files/ding.mp3")
     floor_travel_time = global_vars.FLOOR_ELEVATOR_TRAVEL_TIME
@@ -29,16 +44,12 @@ class Elevator(pg.sprite.Sprite):
         self.image = pg.image.load("help_files/elv.png").convert_alpha()
         self.image = pg.transform.scale(self.image, (self.width, self.height)).convert_alpha()
         self.rect = self.image.get_rect(bottomleft=bottomleft)
-        self.y_position = bottomleft[1]  # The Y position of the elevator at the start
-        self.target_floor = 0  # The target floor for the elevator
-        self.current_floor = 0  # The current floor of the elevator
-        self.arrival_time = 0  # The time remaining until the elevator reaches the target floor
-        self.free = True # Free to move
-        self.floors_waiting = []  # A list of floors the elevator will move to
-
-
-    def moving(self) -> bool:
-        return self.target_floor != self.current_floor
+        self.y_position = bottomleft[1] 
+        self.target_floor = 0 
+        self.current_floor = 0 
+        self.arrival_time = 0 
+        self.free = True
+        self.floors_waiting = [] 
 
 
     def add_task(self, floor):
@@ -62,20 +73,6 @@ class Elevator(pg.sprite.Sprite):
         self.free = False
         self.target_floor = floor
         self.arrival_time = int(abs(self.target_floor - self.current_floor)) * self.floor_travel_time
-
-
-    def update_arrival_time(self):
-        """
-        Updates the remaining time until the elevator arrives at the target floor.
-        """
-        self.arrival_time -= global_vars.ELAPSED_TIME
-
-        if self.arrival_time <= -global_vars.WAITING_TIME_FOR_ELEVATOR_ARRIVAL:
-            self.free = True
-            self.made_a_sound = False
-
-        for floor in self.floors_waiting:
-            floor["arrival time"] -= global_vars.ELAPSED_TIME
 
 
     def update(self):
@@ -120,6 +117,20 @@ class Elevator(pg.sprite.Sprite):
         self.rect.y =  self.y_position - self.height
 
 
+    def update_arrival_time(self):
+        """
+        Updates the remaining time until the elevator arrives at the target floor.
+        """
+        self.arrival_time -= global_vars.ELAPSED_TIME
+
+        if self.arrival_time <= -global_vars.WAITING_TIME_FOR_ELEVATOR_ARRIVAL:
+            self.free = True
+            self.made_a_sound = False
+
+        for floor in self.floors_waiting:
+            floor["arrival time"] -= global_vars.ELAPSED_TIME
+
+
     def on_arrival(self):
         """
         Handles the actions to perform when the elevator arrives at the target floor.
@@ -137,6 +148,10 @@ class Elevator(pg.sprite.Sprite):
         floor = global_vars.FLOOR_HIGHT + global_vars.LINE_THICKNESS
         y_hight = global_vars.SCREEN_HEIGHT - self.y_position
         return (floor * self.target_floor) <= y_hight if self.target_floor > self.current_floor else (floor * self.target_floor) >= y_hight
+
+
+    def moving(self) -> bool:
+        return self.target_floor != self.current_floor
 
 
     def calculate_movement_time(self, floor):
