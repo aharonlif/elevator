@@ -1,17 +1,18 @@
 from typing import List
 import pygame as pg
 
+from building_factory import IBuilding
 from floor import Floor as flr
 from black_line import Line
 from elevator import Elevator as elv
 import global_vars
 
-class Building(pg.sprite.Group):
+class Building(pg.sprite.Group, IBuilding):
     """
     Represents a building containing multiple floors and elevators.
     Manages the elevators and their movements.
     """
-    def __init__(self, build, x_position):
+    def __init__(self, building_config, x_position):
         """
         Initializes the Building object.
         This constructor sets up the building with the specified configuration and position.
@@ -22,8 +23,8 @@ class Building(pg.sprite.Group):
             x_position (int): The x-coordinate for the position of the building on the screen.
         """
         super().__init__()
-        self.floors: List[flr] = [None] * build["floors"]
-        self.elevators: List[elv] = [None] * build["elevators"]
+        self.floors: List[flr] = [None] * building_config["floors"]
+        self.elevators: List[elv] = [None] * building_config["elevators"]
         self.x_position = x_position
         self.create_floors()
         self.create_elevators()
@@ -95,6 +96,8 @@ class Building(pg.sprite.Group):
             if not elv.free:
                 floor = elv.target_floor
                 self.floors[floor].update_time_elevator(elv.arrival_time)
+
             if elv.floors_waiting:
                 for floor in elv.floors_waiting:
                     self.floors[floor["floor"]].update_time_elevator(floor["arrival time"])
+

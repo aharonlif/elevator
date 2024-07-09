@@ -13,6 +13,7 @@ def main():
     manager = Manager()
     last_iteration = 0
     running = True
+    
     while running:
         ticks = pg.time.get_ticks()
         global_vars.ELAPSED_TIME = (ticks - last_iteration)/1000
@@ -20,7 +21,7 @@ def main():
         
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                running = False 
+                running = False
 
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_q:

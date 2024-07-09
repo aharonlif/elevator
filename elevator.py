@@ -88,22 +88,24 @@ class Elevator(pg.sprite.Sprite):
             - If the elevator is moving, it updates its location based on the elapsed time.
         """
         if self.free:           
-            if self.floors_waiting:
+            if len(self.floors_waiting) > 0:
                 floor = self.floors_waiting[0]["floor"]
                 self.arrival_time = self.floors_waiting[0]["arrival time"]
                 self.floors_waiting.pop(0)
                 self.start_task(floor)
-                self.update_location()            
+            else:
+                return          
 
-        elif not self.moving():
+        if not self.moving():
             self.update_arrival_time()
+            return
         
-        elif self.arrived():  
+        if self.arrived():  
             if not self.current_floor == self.target_floor:
                 self.on_arrival()
+            return
 
-        else:
-            self.update_location()
+        self.update_location()
 
 
     def update_location(self):
