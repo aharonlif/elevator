@@ -67,8 +67,7 @@ class Building(pg.sprite.Group, IBuilding):
 
     def _find_nearest_elevator(self, floor):
         nearest_elevator = min(
-            (elevator for elevator in self
-             .elevators),
+            (elevator for elevator in self.elevators),
             key=lambda elevator: elevator.calculate_movement_time(floor)
         )
         return nearest_elevator
@@ -93,7 +92,7 @@ class Building(pg.sprite.Group, IBuilding):
             if not elv.moving() and self.floors[elv.target_floor].button.color == global_vars.BUTTON_COLOR_TEMPORARILY:
                 self.floors[elv.target_floor].change_color(global_vars.BUTTON_COLOR)
 
-            if not elv.free:
+            if not elv.free():
                 floor = elv.target_floor
                 self.floors[floor].update_time_elevator(elv.arrival_time)
 

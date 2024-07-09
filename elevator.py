@@ -156,6 +156,10 @@ class Elevator(pg.sprite.Sprite):
         return self.target_floor != self.current_floor
 
 
+    def free(self):
+        return self.free
+    
+
     def calculate_movement_time(self, floor):
         """
         Calculate the movement time for the elevator to reach a specified floor.
