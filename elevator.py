@@ -122,3 +122,12 @@ class Elevator(pg.sprite.Sprite):
         floor = global_vars.FLOOR_HIGHT + global_vars.LINE_THICKNESS
         y_hight = global_vars.SCREEN_HEIGHT - self.y_position
         return (floor * self.target_floor) <= y_hight if self.target_floor > self.current_floor else (floor * self.target_floor) >= y_hight
+
+
+    def calculate_movement_time(self, floor):
+        if len(self.floors_waiting) > 0:
+            return self.floors_waiting[-1]["arrival time"] + 2 + abs(self.floors_waiting[-1]["floor"] - floor) / 2
+        elif not self.free:
+            return self.arrival_time + 2 + abs(self.target_floor - floor) / 2
+        else:
+            return abs(self.current_floor - floor) / 2
