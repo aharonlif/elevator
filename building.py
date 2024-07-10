@@ -100,3 +100,18 @@ class Building(pg.sprite.Group, IBuilding):
                 for floor in elv.floors_waiting:
                     self.floors[floor["floor"]].update_time_elevator(floor["arrival time"])
 
+
+    def check_click(self, mouse_pos):
+        """
+        Checks if a floor button is clicked and calls the elevator to move to the respective floor if needed.
+        
+        Args:
+            mouse_pos (tuple): The position of the mouse click on the screen (x, y).
+                - This position is used to determine if a floor button was clicked.
+        """
+        for floor in self.floors:
+            if floor.button.check_click(mouse_pos):
+                # Check if there is no elevator currently at this floor or scheduled to move to this floor
+                if not any(floor.floor_number == elev.target_floor or any(floor.floor_number == d.get("floor") for d in elev.floors_waiting) for elev in self.elevators):
+                    self.call_to_elevator(floor.floor_number)
+                return True

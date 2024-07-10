@@ -10,6 +10,7 @@ class IBuilding(ABC):
     @abstractmethod
     def update(self):
         pass
+    
 
 class IBUildingFactory(ABC):
     def __init__(self) -> None:

@@ -28,7 +28,7 @@ def main():
                     running = False
 
             elif event.type == pg.MOUSEBUTTONDOWN:
-                manager.check_floor_click(event.pos)
+                manager.check_click(event.pos)
             
         manager.screen.fill((255, 255, 255)) 
         manager.update()

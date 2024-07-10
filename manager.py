@@ -54,21 +54,10 @@ class Manager:
             self.group.add(current_building)
 
 
-    def check_floor_click(self, mouse_pos):
-        """
-        Checks if a floor button is clicked and calls the elevator to move to the respective floor if needed.
-        
-        Args:
-            mouse_pos (tuple): The position of the mouse click on the screen (x, y).
-                - This position is used to determine if a floor button was clicked.
-        """
-        for build in self.buildings:
-            for floor in build.floors:
-                if floor.button.check_click(mouse_pos):
-                    # Check if there is no elevator currently at this floor or scheduled to move to this floor
-                    if not any(floor.floor_number == elev.target_floor or any(floor.floor_number == d.get("floor") for d in elev.floors_waiting) for elev in build.elevators):
-                        build.call_to_elevator(floor.floor_number)
-                    return
+    def check_click(self, mouse_pos):
+        for building_ in self.buildings:
+            if building_.check_click(mouse_pos):
+                return
 
     def update(self):
         for building_ in self.buildings:
