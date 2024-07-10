@@ -1,79 +1,95 @@
-# Elevator System
+# Elevators Simulation
 
-Overview
-This software simulates an elevator system in a building. The system allows users to call the closest available elevator to their floor. Users can see the elevator arriving, select the desired floor, and watch the elevator move between floors. The software supports multiple buildings, each with multiple floors and elevators. Separation lines are drawn between floors for visual clarity.
+This project simulates a building with elevators using the Pygame library. It includes the functionality for managing elevator movements, handling user input, and rendering the building and elevators.
 
-Software Details
-The software is developed in Python using the Object-Oriented Programming (OOP) approach. It is organized into several key components:
+## Files Overview
 
-1. Manager
-The Manager class is responsible for overseeing the entire system, including the buildings and elevators.
+### `building_factory.py`
 
-Arguments:
-buildings: The number of buildings.
-floors: The number of floors in each building.
-elevators: The number of elevators in each building.
-Functions:
-factory_of_buildings(floors, elevators): Initializes and adds buildings to the system.
-check_floor_click(mouse_pos): Checks if a floor button was clicked and handles the elevator call.
-update(): Updates the state of all buildings and elevators.
-run(): Main loop to run the simulation.
+Contains the interface definitions for buildings and building factories:
 
-2. Building
-The Building class represents a building with multiple floors and elevators.
+- `IBuilding`: An abstract base class for buildings with methods `call_to_elevator` and `update`.
+- `IBUildingFactory`: An abstract base class for building factories with a method `create_building`.
 
-Arguments:
-floors: The number of floors in the building.
-elevators: The number of elevators in the building.
-building_number: Identifier for the building (default is 0).
-x_position: The x-coordinate position of the building (default is 0).
-Functions:
-calculate_x_position(): Calculates the x position for the building.
-floors_factory(): Creates floors for the building.
-elevators_factory(elevators): Creates elevators for the building.
-_find_nearest_elevator(floor): Finds the nearest available elevator to the specified floor.
-move_elevator(floor): Moves the nearest available elevator to the specified floor.
-change_button_color(floor): Changes the color of a floor button temporarily.
-update(): Updates the state of all elevators and handles elevator calls.
+### `manager.py`
 
-3. Floor
-The Floor class represents a floor in a building.
+Manages the game, including screen setup, building initialization, event handling, and the game loop:
 
-Arguments:
-floor_number: The floor number.
-bottomleft: The bottom-left position of the floor.
-Functions:
-update_time_elevator(arrival_time): Updates the display to show the arrival time of the elevator.
-draw_button(): Draws the button on the floor.
+- `Manager`: Initializes the game, creates buildings, checks for floor button clicks, updates the game state, and draws the buildings and elevators.
 
-4. Line
-The Line class represents a separation line between floors.
+###  `building`
 
-Arguments:
-bottomleft: The bottom-left position of the line.
+- `Building`: The Building class represents a building with multiple floors and elevators.
 
-5. Elevator
-The Elevator class represents an elevator.
+### `elevator.py`
 
-Arguments:
-bottomleft: The bottom-left position of the elevator.
-Functions:
-moving(): Checks if the elevator is moving.
-move_to_floor(floor): Moves the elevator to the specified floor.
-calculate_position_to_move(): Calculates the new position of the elevator.
-passed_2_seconds(): Checks if two seconds have passed since the last movement.
-update_location(): Updates the elevator's position.
-arrived(): Checks if the elevator has arrived at the desired floor.
+Defines the elevator class with its functionalities:
 
-6. Button
-The Button class represents a button on a floor to call an elevator.
+- `Elevator`: Represents an elevator, including methods to add tasks, start tasks, update state and location, handle arrival, and calculate movement time.
 
-Arguments:
-number: The number on the button.
-position: The position of the button.
-color: The initial color of the button (default is light yellow).
-Functions:
-create_button_image(): Creates the visual representation of the button.
-check_click(pos): Checks if the button was clicked.
-change_color_temporarily(new_color, duration): Changes the color of the button temporarily.
-reset_color(): Resets the button to its original color.
+### `floor`
+
+- `Floor`: The Floor class represents a floor in a building.
+
+### `button.py`
+
+Defines a clickable button class:
+
+- `Button`: Represents a clickable button with a number displayed on it.
+
+### `line.py`
+
+Defines a line class used to visually separate floors in the building:
+
+- `Line`: Represents a line to separate floors.
+
+### `global_vars.py`
+
+Contains global variables used throughout the game:
+
+- Screen dimensions, colors, button configurations, elevator travel times, and building configurations.
+
+### `main.py`
+
+The main entry point for the game, containing the main game loop:
+
+- `main()`: Initializes the game manager, runs the game loop, handles events, updates the game state, and renders the screen.
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.x
+- Pygame library
+
+### Installation
+
+1. Clone the repository:
+    \```
+    git clone <https://github.com/aharonlif/elevator.git>
+    cd <elevator>
+    \```
+
+2. Install the required dependencies:
+    \```
+    pip install pygame
+    \```
+
+### Running the Simulation
+
+1. Navigate to the project directory.
+2. Run the main script:
+    \```
+    python main.py
+    \```
+
+## Usage
+
+- The simulation window will display multiple buildings with elevators.
+- Click on the floor buttons to call an elevator to that floor.
+- The elevators will move to the requested floors and play a sound upon arrival.
+
+## Controls
+- Click on the floor buttons to call the elevator to the respective floor.
+- Press Q to quit the game.
+- Enjoy the simulation!

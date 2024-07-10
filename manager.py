@@ -59,6 +59,7 @@ class Manager:
             if building_.check_click(mouse_pos):
                 return
 
+
     def update(self):
         for building_ in self.buildings:
             building_.update()
